@@ -9,6 +9,9 @@ import org.zr.tasks.services.TaskListService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +41,33 @@ public class TaskListServiceImpl implements TaskListService {
                 now,
                 now
         ));
+    }
+
+    @Override
+    public Optional<TaskList> getTaskListById(UUID id) {
+        return taskListRepository.findById(id);
+    }
+
+    @Override
+    @Transactional
+    public TaskList updateTaskList(UUID taskListId, TaskList taskList) {
+        if (taskList.getId() == null) {
+            throw new IllegalArgumentException("Task list must have an ID");
+        }
+        if (!Objects.equals(taskListId, taskList.getId())) {
+            throw new IllegalArgumentException("Attempting to change task list ID, this is not permitted!");
+        }
+        TaskList existingTaskList = taskListRepository.findById(taskListId)
+                .orElseThrow(() -> new IllegalArgumentException("Task list not found!"));
+        existingTaskList.setTitle(taskList.getTitle());
+        existingTaskList.setDescription(taskList.getDescription());
+        existingTaskList.setUpdated(LocalDateTime.now());
+        return taskListRepository.save(existingTaskList);
+    }
+
+    @Override
+    @Transactional
+    public void deleteTaskListById(UUID taskListId) {
+        taskListRepository.deleteById(taskListId);
     }
 }
