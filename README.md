@@ -63,10 +63,6 @@ A **Task Management System** built using **Spring Boot** and **PostgreSQL**. Thi
      mvnw.cmd spring-boot:run
      ```
 
-4. **Access API**
-
-   - App runs at: `http://localhost:8080`
-
 ---
 
 ## API Endpoints
